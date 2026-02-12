@@ -34,7 +34,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 # Proxy
 PROXY_HOST = "127.0.0.1"
 PROXY_PORT = "9050"
-USE_PROXY = False  # Disabled: Tor exit nodes being blocked
+USE_PROXY = os.environ.get("USE_PROXY", "false").lower() == "true"
 
 # Delays
 MIN_DELAY = 3

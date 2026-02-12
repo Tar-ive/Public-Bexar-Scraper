@@ -20,10 +20,18 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Install Tor
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tor
+          sudo service tor start
+          sleep 10 # Wait for Tor to bootstrap
+
       - name: Run Scraper
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           GITHUB_ACTIONS: 'true'
+          USE_PROXY: 'true'
         run: python main.py
 
       - name: Commit State
