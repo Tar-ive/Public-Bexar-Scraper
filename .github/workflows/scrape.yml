@@ -33,6 +33,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           GITHUB_ACTIONS: 'true'
           USE_PROXY: 'true'
+          PYTHONUNBUFFERED: '1'
         run: python main.py
 
       - name: Commit State
