@@ -232,6 +232,7 @@ def create_driver():
         options.set_preference("network.proxy.socks_port", int(PROXY_PORT))
         options.set_preference("network.proxy.socks_version", 5)
         options.set_preference("network.proxy.socks_remote_dns", True)
+        options.set_preference("network.proxy.no_proxies_on", "localhost, 127.0.0.1")
     driver = webdriver.Firefox(options=options)
     driver.set_page_load_timeout(120)
     return driver

@@ -25,7 +25,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y tor
           sudo service tor start
-          sleep 10 # Wait for Tor to bootstrap
+          sleep 20 # Wait for Tor to bootstrap
+          curl --socks5 127.0.0.1:9050 --connect-timeout 5 https://check.torproject.org/api/ip || echo "Tor check failed"
 
       - name: Run Scraper
         env:
