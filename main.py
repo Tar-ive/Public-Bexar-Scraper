@@ -24,7 +24,7 @@ URL_TEMPLATE = "https://bexar.tx.publicsearch.us/results?department=RP&docTypes=
 
 START_DATE_FIXED = "18000101"
 DEFAULT_END_DATE = "20260121"
-WINDOW_YEARS = 10
+WINDOW_YEARS = int(os.environ.get("WINDOW_YEARS", "10"))
 
 # Environment
 HEADLESS = os.environ.get("HEADLESS", "false").lower() == "true"
@@ -234,7 +234,7 @@ def create_driver():
         options.set_preference("network.proxy.socks_remote_dns", True)
         options.set_preference("network.proxy.no_proxies_on", "localhost, 127.0.0.1")
     driver = webdriver.Firefox(options=options)
-    driver.set_page_load_timeout(120)
+    driver.set_page_load_timeout(int(os.environ.get("PAGE_LOAD_TIMEOUT", "180")))
     return driver
 
 def extract_row_data(row):
@@ -292,8 +292,26 @@ def main():
     pages_session = 0
     batch_buffer = []
     
+    def safe_get(u, attempts=3):
+        last = None
+        for i in range(1, attempts+1):
+            try:
+                driver.get(u)
+                return True
+            except Exception as e:
+                last = e
+                print(f"⚠️  Navigation failed (attempt {i}/{attempts}): {e}")
+                try:
+                    driver.delete_all_cookies()
+                except:
+                    pass
+                sleep(10 * i)
+        print(f"❌ Failed to navigate after {attempts} attempts: {last}")
+        return False
+
     try:
-        driver.get(url)
+        if not safe_get(url, attempts=3):
+            raise RuntimeError("Initial navigation failed")
         sleep(5)
         try:
             for btn in driver.find_elements(By.XPATH, "//button[contains(text(), 'Accept') or contains(text(), 'Close')]"):

@@ -34,6 +34,9 @@ jobs:
           GITHUB_ACTIONS: 'true'
           USE_PROXY: 'true'
           PYTHONUNBUFFERED: '1'
+          HEADLESS: 'true'
+          WINDOW_YEARS: '3'
+          PAGE_LOAD_TIMEOUT: '240'
         run: python main.py
 
       - name: Commit State
